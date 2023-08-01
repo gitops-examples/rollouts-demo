@@ -9,3 +9,6 @@ resources:
 - ../../../apps/rollout/overlays/bluegreen
 - ../../../apps/rollout/overlays/canary
 - networkpolicy-cicd.yaml
+images:
+- digest: sha256:2d0a17836583273d35a44429df0a9aedb89591a813e41534061cb94f988d3a47
+  name: argoproj/rollouts-demo
