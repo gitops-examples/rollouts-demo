@@ -12,12 +12,6 @@ kustomize build environments/overlays/gitops | envsubst '${SUB_DOMAIN}' | oc app
 echo "Pause $SLEEP_SECONDS seconds for the creation of the ${ROLLOUTS_DEMO_NS} instance..."
 sleep $SLEEP_SECONDS
 
-echo "Waiting for deployments to start"
-until oc get deployment cluster -n $ROLLOUTS_DEMO_NS
-do
-  sleep 5;
-done
-
 echo "Waiting for all pods to be created"
 deployments=(argocd-dex-server argocd-redis argocd-repo-server argocd-server)
 for i in "${deployments[@]}";

@@ -8,7 +8,7 @@ default:
       namespace: openshift-gitops
       server: https://kubernetes.default.svc
     source:
-      repoURL: https://github.com/gnunn-gitops/rollouts-demo
+      repoURL: https://github.com/gitops-examples/rollouts-demo
       targetRevision: main
 
 applications:
