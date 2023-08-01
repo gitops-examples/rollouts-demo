@@ -1,7 +1,6 @@
 namespace: rollouts-demo-prod
 
 resources:
-- prod-namespace.yaml
 - analysis-auth-monitoring.yaml
 - monitor-token.yaml
 - rollout-manager.yaml

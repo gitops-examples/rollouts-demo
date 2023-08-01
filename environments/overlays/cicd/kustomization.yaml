@@ -1,6 +1,5 @@
 namespace: rollouts-demo-cicd
 
 resources:
-- cicd-namespace.yaml
 - ../../../pipelines/base
 - pipeline-sa.yaml

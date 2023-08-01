@@ -4,5 +4,4 @@ kind: Kustomization
 namespace: rollouts-demo-dev
 
 resources:
-- dev-namespace.yaml
 - ../../../apps/deploy/base

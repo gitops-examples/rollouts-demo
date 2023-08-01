@@ -20,5 +20,8 @@ do
   oc rollout status deployment $i -n $ROLLOUTS_DEMO_NS
 done
 
+echo "Create namespaces"
+oc apply -k build infra/namespaces/base/
+
 echo "Install applications and pipelines"
 kustomize build argocd/base --enable-helm | oc apply -f -

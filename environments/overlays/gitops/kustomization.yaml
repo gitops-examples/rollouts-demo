@@ -4,5 +4,4 @@ kind: Kustomization
 namespace: rollouts-demo-gitops
 
 resources:
-- gitops-namespace.yaml
 - argocd.yaml

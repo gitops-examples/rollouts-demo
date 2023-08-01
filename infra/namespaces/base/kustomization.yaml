@@ -1,0 +1,5 @@
+resources:
+- cicd-namespace.yaml
+- dev-namespace.yaml
+- gitops-namespace.yaml
+- prod-namespace.yaml
