@@ -4,16 +4,16 @@ metadata:
   name: argocd
 spec:
   repo:
-    env:
-      - name: SUB_DOMAIN
-        value: ${SUB_DOMAIN}
-      - name: GIT_REPO
-        value: ${GIT_REPO}
     sidecarContainers:
       - name: setenv-plugin
         command: [/var/run/argocd/argocd-cmp-server]
         image: quay.io/gnunn/tools:latest
         imagePullPolicy: Always
+        env:
+          - name: SUB_DOMAIN
+            value: ${SUB_DOMAIN}
+          - name: GIT_REPO
+            value: ${GIT_REPO}
         securityContext:
           runAsNonRoot: true
         volumeMounts:
