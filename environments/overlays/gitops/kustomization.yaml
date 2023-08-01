@@ -5,3 +5,4 @@ namespace: rollouts-demo-gitops
 
 resources:
 - argocd.yaml
+- create-pipeline-local-user-job.yaml
