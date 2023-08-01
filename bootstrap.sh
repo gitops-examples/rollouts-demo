@@ -5,6 +5,10 @@ echo "Fetching cluster subdomain"
 export SUB_DOMAIN=$(oc get ingress.config.openshift.io cluster -n openshift-ingress -o jsonpath='{.spec.domain}')
 echo "SUB_DOMAIN=${SUB_DOMAIN}"
 
+echo "Getting remote URL for repo"
+export GIT_REPO=$(git config --get remote.origin.url)
+echo "GIT_REPO=${GIT_REPO}"
+
 echo "Create namespaces"
 oc apply -k infra/namespaces/base
 
@@ -13,7 +17,7 @@ oc apply -k infra/auth-monitoring/base
 
 echo "Create rollouts GitOps instance"
 # echo "Create default instance of gitops operator"
-kustomize build environments/overlays/gitops | envsubst '${SUB_DOMAIN}' | oc apply -f -
+kustomize build environments/overlays/gitops | envsubst '${SUB_DOMAIN},${GIT_REPO}' | oc apply -f -
 
 echo "Pause $SLEEP_SECONDS seconds for the creation of the ${ROLLOUTS_DEMO_NS} instance..."
 sleep $SLEEP_SECONDS
@@ -27,4 +31,4 @@ do
 done
 
 echo "Install applications and pipelines"
-kustomize build argocd/base --enable-helm | oc apply -f -
+kustomize build argocd/base --enable-helm | envsubst '${GIT_REPO}' | oc apply -f -

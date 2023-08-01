@@ -7,6 +7,8 @@ spec:
     env:
       - name: SUB_DOMAIN
         value: ${SUB_DOMAIN}
+      - name: GIT_REPO
+        value: ${GIT_REPO}
   server:
     autoscale:
       enabled: false

@@ -24,12 +24,11 @@ Note that this demo is assuming it is being installed in a lab or test cluster w
 
 * Fork this repo into your own space, this is required since the pipeline will update the repo with the new image references
 
-* In `argocd/base/values.yaml` update the repoURL to use your forked repo
+* Clone the forked repo to your local file system and then switch to the directory:
 
-* Optionally, in `pipelines/base/pipeline.yaml` update the default repoURL to your forked repo. If you do not do this you will need to set the repo
-value when running the pipeline.
+```cd rollouts-demo```
 
-* Log into OpenShift with the oc CLI and run the `bootstrap.sh` command to install the app.
+* Log into OpenShift with the oc CLI and from the `rollouts-demo` directory run the `bootstrap.sh` command to install the app.
 
 * Create a secret for github as follows replacing XXX with the appropriate values for your forked repository, note the password is not your password to
 github but a Personal Access Token (classic) that you need to create in github.

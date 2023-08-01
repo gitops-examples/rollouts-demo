@@ -9,7 +9,7 @@ spec:
     - default: blue
       name: COLOR
       type: string
-    - default: https://github.com/gitops-examples/rollouts-demo
+    - default: ${GIT_REPO}
       name: GIT_REPOSITORY
       type: string
     - default: main
