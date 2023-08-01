@@ -10,5 +10,5 @@ resources:
 - ../../../apps/rollout/overlays/canary
 - networkpolicy-cicd.yaml
 images:
-- digest: sha256:2d0a17836583273d35a44429df0a9aedb89591a813e41534061cb94f988d3a47
+- digest: sha256:e32df3d15f759d36c323b3dccb7003d38df1a4274d37217715151f085c24c58f
   name: argoproj/rollouts-demo
