@@ -5,6 +5,9 @@ echo "Fetching cluster subdomain"
 export SUB_DOMAIN=$(oc get ingress.config.openshift.io cluster -n openshift-ingress -o jsonpath='{.spec.domain}')
 echo "SUB_DOMAIN=${SUB_DOMAIN}"
 
+echo "Create namespaces"
+oc apply -k infra/namespaces/base
+
 echo "Create rollouts GitOps instance"
 # echo "Create default instance of gitops operator"
 kustomize build environments/overlays/gitops | envsubst '${SUB_DOMAIN}' | oc apply -f -
@@ -19,9 +22,6 @@ do
   echo "Waiting for deployment $i";
   oc rollout status deployment $i -n $ROLLOUTS_DEMO_NS
 done
-
-echo "Create namespaces"
-oc apply -k build infra/namespaces/base/
 
 echo "Install applications and pipelines"
 kustomize build argocd/base --enable-helm | oc apply -f -
