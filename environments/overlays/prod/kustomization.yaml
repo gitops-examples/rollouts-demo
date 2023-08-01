@@ -1,4 +1,4 @@
-namespace: rolouts-demo-prod
+namespace: rollouts-demo-prod
 
 resources:
 - prod-namespace.yaml
