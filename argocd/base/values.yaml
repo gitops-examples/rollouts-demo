@@ -18,9 +18,6 @@ applications:
       namespace: rollouts-demo-gitops
     source:
       path: environments/overlays/gitops
-      extraSourceFields: |
-        plugin:
-          name: kustomize-envvar
 
   rollouts-demo-dev:
     labels:
@@ -29,9 +26,6 @@ applications:
       namespace: rollouts-demo-dev
     source:
       path: environments/overlays/dev
-      extraSourceFields: |
-        plugin:
-          name: kustomize-envvar
 
   rollouts-demo-prod:
     labels:
@@ -40,9 +34,6 @@ applications:
       namespace: rollouts-demo-prod
     source:
       path: environments/overlays/prod
-      extraSourceFields: |
-        plugin:
-          name: kustomize-envvar
 
   rollouts-demo-cicd:
     labels:
@@ -51,6 +42,3 @@ applications:
       namespace: rollouts-demo-cicd
     source:
       path: environments/overlays/cicd
-      extraSourceFields: |
-        plugin:
-          name: kustomize-envvar

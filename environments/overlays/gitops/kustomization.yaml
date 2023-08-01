@@ -4,5 +4,6 @@ kind: Kustomization
 namespace: rollouts-demo-gitops
 
 resources:
+- setenv-cmp-plugin.yaml
 - argocd.yaml
 - create-pipeline-local-user-job.yaml
