@@ -9,6 +9,13 @@ update the image references in the development and production namespaces.
 In development a normal Deployment is used, in Production both a bluegreen and canary rollout for the same application is deployed
 so that both strategies supported by Rolouts can be shown.
 
+### Pre-requisites
+
+Your local machine must be able to run a bash script and have the following command line tools available to it:
+- envsubst
+- git
+- kustomize
+
 ### Installing the Demo
 
 Note that this demo is assuming it is being installed in a lab or test cluster where the user has full access to the openshift-gitops namespace.
@@ -22,10 +29,12 @@ Note that this demo is assuming it is being installed in a lab or test cluster w
 * Optionally, in `pipelines/base/pipeline.yaml` update the default repoURL to your forked repo. If you do not do this you will need to set the repo
 value when running the pipeline.
 
-* Log into OpenShift with the oc CLI and run the `bootstrap.sh` command to install the apps.
+* Log into OpenShift with the oc CLI and run the `bootstrap.sh` command to install the app.
 
-* Create a secret for github as follows replacing XXX with the appropriate values for your forked repository.
+* Create a secret for github as follows replacing XXX with the appropriate values for your forked repository, note the password is not your password to
+github but a Personal Access Token (classic) that you need to create in github.
 
 ```
-oc create secret generic test  --type='kubernetes.io/basic-auth' --from-literal=username=XXXX --from-literal=password=XXXX --from-literal=email=XXXXX -n rollouts-demo-cicd
+oc create secret generic github --type='kubernetes.io/basic-auth' --from-literal=username=XXXX --from-literal=password=XXXX --from-literal=email=XXXXX -n rollouts-demo-cicd
+oc annotate secret github tekton.dev/git-0='https://github.com'  -n rollouts-demo-cicd
 ```
