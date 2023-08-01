@@ -3,9 +3,7 @@ default:
     enabled: true
     enableAutoSync: true
     autoSyncPrune: false
-    project: rollouts-demo
-    labels:
-      gitops.openshift.io/controllerNamespace: gitops
+    project: default
     destination:
       namespace: rollouts-demo-gitops
       server: https://kubernetes.default.svc

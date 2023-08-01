@@ -30,8 +30,7 @@ spec:
               value: "Bearer {{args.api-token}}"
           jsonPath: "{$.data.result}"
       # prometheus:
-      #   #address: https://thanos-querier.openshift-monitoring.svc.cluster.local:9091
-      #   address: https://thanos-querier-openshift-monitoring.apps.home.ocplab.com
+      #   address: https://thanos-querier.openshift-monitoring:9091
       #   query: |
       #     sum(irate(haproxy_backend_http_responses_total{exported_namespace='{{args.namespace}}', route=~"{{args.route-name}}", code!~"5.*"}[5m])) / sum(irate(haproxy_backend_http_responses_total{exported_namespace='{{args.namespace}}', route=~"{{args.route-name}}"}[5m])) > 0 or on() vector(0)
   - name: run-load
