@@ -1,0 +1,88 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ArgoCD
+metadata:
+  name: argocd
+spec:
+  repo:
+    env:
+      - name: SUB_DOMAIN
+        value: ${SUB_DOMAIN}
+  server:
+    autoscale:
+      enabled: false
+    grpc:
+      ingress:
+        enabled: false
+    ingress:
+      enabled: false
+    insecure: true
+    route:
+      enabled: true
+      tls:
+        insecureEdgeTerminationPolicy: Redirect
+        termination: edge
+  resourceTrackingMethod: annotation
+  disableAdmin: false
+  resourceCustomizations: |
+    PersistentVolumeClaim:
+      health.lua: |
+        hs = {}
+        if obj.status ~= nil then
+          if obj.status.phase ~= nil then
+            if obj.status.phase == "Pending" then
+              hs.status = "Healthy"
+              hs.message = obj.status.phase
+              return hs
+            end
+            if obj.status.phase == "Bound" then
+              hs.status = "Healthy"
+              hs.message = obj.status.phase
+              return hs
+            end
+          end
+        end
+        hs.status = "Progressing"
+        hs.message = "Waiting for certificate"
+        return hs
+  sso:
+    dex:
+      image: quay.io/gnunn/dex
+      openShiftOAuth: true
+      version: token-exchange-1.8
+    provider: dex
+  rbac:
+    defaultPolicy: 'role:admin'
+    policy: |
+      g, cluster-admins, role:admin
+    scopes: '[groups]'
+  extraConfig:
+    accounts.rollouts-demo-pipeline: apiKey
+  resourceHealthChecks:
+    - check: |
+        hs = {}
+        hs.status = "Progressing"
+        hs.message = ""
+        if obj.status ~= nil then
+          if obj.status.health ~= nil then
+            hs.status = obj.status.health.status
+            hs.message = obj.status.health.message
+          end
+        end
+        return hs
+      group: argoproj.io
+      kind: Application
+  resourceIgnoreDifferences:
+    resourceIdentifiers:
+      - customization:
+          jsonPointers:
+            - /status/ingress
+        group: route.openshift.io
+        kind: Route
+  ha:
+    enabled: false
+  kustomizeBuildOptions: '--enable-helm'
+  configManagementPlugins: |-
+    - name: kustomize-envvar
+      generate:
+        command: ["sh", "-c"]
+        args: ["kustomize build --enable-helm . | perl -pe 's{\\$(\\{)?(\\w+)(?(1)\\})}{$ENV{$2} // $&}ge'"]

@@ -13,14 +13,14 @@ so that both strategies supported by Rolouts can be shown.
 
 Note that this demo is assuming it is being installed in a lab or test cluster where the user has full access to the openshift-gitops namespace.
 
-* Install the OpenShift GitOps operator
+* Install the OpenShift GitOps and Pipelines operators in your cluster. Note GitOps 1.9+ and Pipelines 1.11+ is required
 
 * Fork this repo into your own space, this is required since the pipeline will update the repo with the new image references
 
-* In `argocd\base\values.yaml` update the repoURL to use your forked repo
+* In `argocd/base/values.yaml` update the repoURL to use your forked repo
 
-* Update the route parameters in `apps/overlays/bluegreen/rollout.yaml` and `apps/overlays/canary/rollout.yaml` so the subdomain (i.e. apps.<cluster-name>.<domain>) reflects
-your cluster. This is needed since the demo uses Apache siege to generate load against the rollouts to support the Analysis.
+* Optionally, in `pipelines/base/pipeline.yaml` update the default repoURL to your forked repo. If you do not do this you will need to set the repo
+value when running the pipeline.
 
 * Log into OpenShift with the oc CLI and run the `bootstrap.sh` command to install the apps.
 

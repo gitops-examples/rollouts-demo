@@ -8,5 +8,5 @@ helmCharts:
   version: 0.2.6
   repo: https://gnunn-gitops.github.io/helm-charts
   valuesFile: values.yaml
-  namespace: rollouts-demo-gitops
+  namespace: openshift-gitops
   releaseName: rollouts-demo
