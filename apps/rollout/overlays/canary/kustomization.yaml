@@ -1,0 +1,6 @@
+resources:
+- ../../base
+- canary-analysis.yaml
+- rollout.yaml
+- services.yaml
+- route.yaml

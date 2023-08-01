@@ -1,0 +1,11 @@
+namespace: rolouts-demo-prod
+
+resources:
+- prod-namespace.yaml
+- analysis-auth-monitoring.yaml
+- monitor-token.yaml
+- rollout-manager.yaml
+- ../../../apps/rollout/overlays/bluegreen
+- ../../../apps/rollout/overlays/canary
+- networkpolicy-cicd.yaml
+- rollouts-edit-cicd-rolebinding.yaml

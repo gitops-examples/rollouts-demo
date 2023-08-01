@@ -1,0 +1,46 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: siege
+spec:
+  params:
+  - name: URL
+    type: string
+  - name: CONCURRENT
+    type: string
+  - name: REPETITIONS
+    type: string
+  - name: THRESHOLD
+    type: string
+  results:
+  - description: Number of failed transactions
+    name: FAILED_TRANSACTIONS
+  - description: Number of successful transactions
+    name: SUCCESSFUL_TRANSACTIONS
+  - description: Number of transactions
+    name: TRANSACTIONS
+  - description: Whether this is considered a failed test based on threshold
+    name: FAILED
+  steps:
+  - image: quay.io/gnunn/tools:latest
+    name: run-test
+    script: |
+      echo "Testing URL with command 'siege -r $(params.REPETITIONS) -c $(params.CONCURRENT) -v $(params.URL) -j' "
+      RESULTS=$(siege -r $(params.REPETITIONS) -c $(params.CONCURRENT) -v $(params.URL) -j)
+
+      FAILED=$(jq '.failed_transactions' <<< "${RESULTS}")
+      TOTAL=$(jq '.transactions' <<< "${RESULTS}")
+
+      FAILED_PERCENT=$(jq -n $FAILED/$TOTAL*100)
+
+      if (( $(echo "$FAILED_PERCENT > $(params.THRESHOLD)" |bc -l) )); then
+        echo -n "true" > $(results.FAILED.path)
+      else
+        echo -n "false" > $(results.FAILED.path)
+      fi
+
+      echo -n $RESULTS | jq .failed_transactions > $(results.FAILED_TRANSACTIONS.path)
+      echo -n $RESULTS | jq .successful_transactions > $(results.SUCCESSFUL_TRANSACTIONS.path)
+      echo -n $RESULTS | jq .transactions > $(results.TRANSACTIONS.path)
+
+      echo $RESULTS

@@ -1,0 +1,7 @@
+resources:
+- ../../base
+- rollout.yaml
+- services.yaml
+- route-active.yaml
+- route-preview.yaml
+- bluegreen-analysis.yaml

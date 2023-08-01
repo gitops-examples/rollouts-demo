@@ -1,0 +1,40 @@
+default:
+  app:
+    enabled: true
+    enableAutoSync: true
+    autoSyncPrune: false
+    project: rollouts-demo
+    labels:
+      gitops.openshift.io/controllerNamespace: gitops
+    destination:
+      namespace: rollouts-demo-gitops
+      server: https://kubernetes.default.svc
+    source:
+      repoURL: https://github.com/gnunn-gitops/rollouts-demo
+      targetRevision: main
+
+applications:
+
+  rollouts-demo-dev:
+    labels:
+      app.kubernetes.io/name: rollouts-demo
+    destination:
+      namespace: rollouts-demo-dev
+    source:
+      path: environments/overlays/dev
+
+  rollouts-demo-prod:
+    labels:
+      app.kubernetes.io/name: rollouts-demo
+    destination:
+      namespace: rollouts-demo-prod
+    source:
+      path: environments/overlays/prod
+
+  rollouts-demo-cicd:
+    labels:
+      app.kubernetes.io/name: rollouts-demo
+    destination:
+      namespace: rollouts-demo-cicd
+    source:
+      path: environments/overlays/cicd

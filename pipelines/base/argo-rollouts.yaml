@@ -1,0 +1,17 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: argo-rollouts
+spec:
+  params:
+  - name: COMMAND
+    type: string
+  - name: NAMESPACE
+    type: string
+  - name: ROLLOUT
+    type: string
+  steps:
+  - name: command
+    image: quay.io/gnunn/tools:latest
+    script: |
+      oc argo rollouts $(params.COMMAND) $(params.ROLLOUT) -n $(params.NAMESPACE)

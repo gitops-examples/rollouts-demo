@@ -1,0 +1,1 @@
+kustomize build argocd/base --enable-helm | oc apply -f -

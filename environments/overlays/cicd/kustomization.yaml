@@ -1,0 +1,7 @@
+namespace: rollouts-demo-cicd
+
+resources:
+- cicd-namespace.yaml
+- ../../../pipelines/base
+- github-external-secret.yaml
+- pipeline-sa.yaml

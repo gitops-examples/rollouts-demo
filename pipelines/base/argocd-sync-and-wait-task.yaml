@@ -1,0 +1,51 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: argocd-task-sync-and-wait
+  labels:
+    app.kubernetes.io/version: "0.2"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.12.1"
+    tekton.dev/categories: Deployment
+    tekton.dev/tags: deploy
+    tekton.dev/displayName: "argocd"
+    tekton.dev/platforms: "linux/amd64"
+spec:
+  description: >-
+    This task syncs (deploys) an Argo CD application and waits for it to be healthy.
+
+    To do so, it requires the address of the Argo CD server and some form of
+    authentication either a username/password or an authentication token.
+
+  params:
+    - name: application_name
+      description: name of the application to sync
+    - name: flags
+      default: "--grpc-web"
+    - name: gitops-version
+      default: v1.8.0
+  stepTemplate:
+    envFrom:
+      - secretRef:
+          name: argocd-env-secret  # used for authentication (username/password or auth token) and server address
+  steps:
+    - name: wait-and-sync
+      image: quay.io/gnunn/tools:latest
+      script: |
+
+        alias argocd='argocd --insecure'
+
+        if [ -z "$ARGOCD_AUTH_TOKEN" ]; then
+          yes | argocd login "$ARGOCD_SERVER" --username="$ARGOCD_USERNAME" --password="$ARGOCD_PASSWORD" "$(params.flags)";
+        fi
+
+        # Sync application
+        if [[ $(argocd app get $(params.application_name) -o json | jq '.spec.syncPolicy.automated') != "null" ]] ; then
+          argocd app get $(params.application_name) --refresh "$(params.flags)"
+        else
+          argocd app sync $(params.application_name) "$(params.flags)"
+        fi
+
+        # Application may already be syncing due to webhook
+        echo "#### Waiting for automatic sync if it was already triggered (or other pending operation) ####"
+        argocd app wait "$(params.application_name)" --operation "$(params.flags)"
