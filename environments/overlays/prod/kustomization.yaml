@@ -1,7 +1,6 @@
 namespace: rollouts-demo-prod
 
 resources:
-- analysis-auth-monitoring.yaml
 - monitor-token.yaml
 - rollout-manager.yaml
 - ../../../apps/rollout/overlays/bluegreen

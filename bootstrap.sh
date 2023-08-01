@@ -8,6 +8,9 @@ echo "SUB_DOMAIN=${SUB_DOMAIN}"
 echo "Create namespaces"
 oc apply -k infra/namespaces/base
 
+echo "Authorize monitoring for rollouts analysis"
+oc apply -k infra/auth-monitoring/base
+
 echo "Create rollouts GitOps instance"
 # echo "Create default instance of gitops operator"
 kustomize build environments/overlays/gitops | envsubst '${SUB_DOMAIN}' | oc apply -f -

@@ -1,0 +1,4 @@
+namespace: rollouts-demo-prod
+
+resources:
+- analysis-auth-monitoring.yaml
