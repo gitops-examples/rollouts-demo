@@ -5,3 +5,6 @@ namespace: rollouts-demo-dev
 
 resources:
 - ../../../apps/deploy/base
+images:
+- digest: sha256:e32df3d15f759d36c323b3dccb7003d38df1a4274d37217715151f085c24c58f
+  name: argoproj/rollouts-demo
