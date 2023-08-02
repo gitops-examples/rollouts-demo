@@ -16,20 +16,10 @@ spec:
       name: GIT_REF
       type: string
   tasks:
-    - name: get-image-digest
-      taskRef:
-        name: image-tag-to-digest
-      params:
-        - name: image_dest_url
-          value: argoproj/rollouts-demo
-        - name: image_dest_tag
-          value: $(params.COLOR)
     - name: dev-git-update
       taskRef:
         kind: Task
         name: git-update-deployment
-      runAfter:
-        - get-image-digest
       params:
       - name: GIT_REPOSITORY
         value: $(params.GIT_REPOSITORY)
@@ -37,8 +27,8 @@ spec:
         value: $(params.GIT_REF)
       - name: NEW_IMAGE
         value: argoproj/rollouts-demo
-      - name: NEW_DIGEST
-        value: $(tasks.get-image-digest.results.image_digest)
+      - name: NEW_TAG
+        value: $(params.COLOR)
       - name: KUSTOMIZATION_PATH
         value: environments/overlays/dev
       workspaces:
@@ -65,8 +55,8 @@ spec:
         value: $(params.GIT_REF)
       - name: NEW_IMAGE
         value: argoproj/rollouts-demo
-      - name: NEW_DIGEST
-        value: $(tasks.get-image-digest.results.image_digest)
+      - name: NEW_TAG
+        value: $(params.COLOR)
       - name: KUSTOMIZATION_PATH
         value: environments/overlays/prod
       workspaces:
@@ -80,49 +70,3 @@ spec:
       params:
         - name: application_name
           value: rollouts-demo-gitops/rollouts-demo-prod
-    # - name: smoke-test
-    #   taskRef:
-    #     name: siege
-    #   runAfter:
-    #     - prod-gitops-sync
-    #   params:
-    #     - name: URL
-    #       value: http://rollout-bluegreen-preview-rollouts-demo-prod.apps.home.ocplab.com
-    #     - name: CONCURRENT
-    #       value: "20"
-    #     - name: REPETITIONS
-    #       value: "10"
-    #     - name: THRESHOLD
-    #       value: "5.0"
-    # - name: promote
-    #   when:
-    #   - input: "$(tasks.smoke-test.results.FAILED)"
-    #     operator: in
-    #     values: ["false"]
-    #   taskRef:
-    #     name: argo-rollouts
-    #   runAfter:
-    #     - smoke-test
-    #   params:
-    #     - name: COMMAND
-    #       value: promote
-    #     - name: ROLLOUT
-    #       value: rollout-bluegreen
-    #     - name: NAMESPACE
-    #       value: rollouts-demo-prod
-    # - name: abort
-    #   when:
-    #   - input: "$(tasks.smoke-test.results.FAILED)"
-    #     operator: in
-    #     values: ["true"]
-    #   taskRef:
-    #     name: argo-rollouts
-    #   runAfter:
-    #     - smoke-test
-    #   params:
-    #     - name: COMMAND
-    #       value: abort
-    #     - name: ROLLOUT
-    #       value: rollout-bluegreen
-    #     - name: NAMESPACE
-    #       value: rollouts-demo-prod

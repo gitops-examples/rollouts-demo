@@ -9,7 +9,7 @@ metadata:
     operator.tekton.dev/provider-type: community
   name: git-update-deployment
 spec:
-  description: This Task can be used to update image digest in a Git repo using kustomize.
+  description: This Task can be used to update image digest or tag in a Git repo using kustomize.
     It requires a secret with credentials for accessing the git repo.
   params:
   - name: GIT_REPOSITORY
@@ -21,6 +21,10 @@ spec:
     type: string
   - name: NEW_DIGEST
     type: string
+    default: ""
+  - name: NEW_TAG
+    type: string
+    default: ""
   - name: KUSTOMIZATION_PATH
     type: string
   - name: CREATE_BRANCH_NAME
@@ -52,7 +56,13 @@ spec:
     name: update-digest
     script: |
       cd git-update-digest-workdir/$(params.KUSTOMIZATION_PATH)
-      kustomize edit set image $(params.NEW_IMAGE)@$(params.NEW_DIGEST)
+      # check if digest is set and if not set tag
+      if [[ -z "$(params.NEW_DIGEST)" ]]
+      then
+        kustomize edit set image $(params.NEW_IMAGE):$(params.NEW_TAG)
+      else
+        kustomize edit set image $(params.NEW_IMAGE)@$(params.NEW_DIGEST)
+      fi
 
       echo "##########################"
       echo "### kustomization.yaml ###"
@@ -69,7 +79,7 @@ spec:
 
       git status
       git add $(params.KUSTOMIZATION_PATH)/kustomization.yaml
-      git commit -m "[ci] Image digest updated"
+      git commit -m "[ci] Image updated"
 
       if [ "$(params.CREATE_BRANCH_NAME)" = "skip" ]
       then
