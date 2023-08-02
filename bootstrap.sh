@@ -31,4 +31,4 @@ do
 done
 
 echo "Install applications and pipelines"
-kustomize build argocd/base --enable-helm | envsubst '${GIT_REPO}' | oc apply -f -
+kustomize build argocd/base --enable-helm | envsubst \$SUB_DOMAIN,\$GIT_REPO | oc apply -f -
