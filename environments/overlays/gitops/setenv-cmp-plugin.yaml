@@ -13,7 +13,7 @@ data:
       init:
         command: [sh, -c, 'echo "Initializing setenv-plugin-cmp..."']
       generate:
-        command: [sh, -c, "kustomize build --enable-helm . | envsubst"]
+        command: [sh, -c, "kustomize build --enable-helm . | envsubst \$SUB_DOMAIN,\$GIT_REPO"]
       discover:
         find:
           command: [sh, -c, 'find . -maxdepth 1 -name kustomization.yaml']

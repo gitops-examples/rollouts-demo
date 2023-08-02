@@ -17,7 +17,7 @@ oc apply -k infra/auth-monitoring/base
 
 echo "Create rollouts GitOps instance"
 # echo "Create default instance of gitops operator"
-kustomize build environments/overlays/gitops | envsubst | oc apply -f -
+kustomize build environments/overlays/gitops | envsubst \$SUB_DOMAIN,\$GIT_REPO | oc apply -f -
 
 echo "Pause $SLEEP_SECONDS seconds for the creation of the ${ROLLOUTS_DEMO_NS} instance..."
 sleep $SLEEP_SECONDS
