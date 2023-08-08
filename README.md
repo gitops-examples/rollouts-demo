@@ -100,6 +100,6 @@ At this point you can proceed to promote both deployments and watch them go to c
 
 ### Testing Rollbacks
 
-If you want to test performing a rollback, first go into Argo CD and disable automatic sync for the `rollouts-demo-prod` application, if you do not do this Argo CD will automatically revert the rollback back to the state in git as expected.
+If you want to test performing a rollback, first go into Argo CD and disable automatic sync for the `rollouts-demo-prod` application, if you do not do this Argo CD will automatically revert the rollback back to the state in git, which is expected, but prevents the rollback.
 
 Once the automatic sync is disabled you can then perform a rollback to the previous blue version. Note that like Deployment rollbacks are essentially a roll forward with the previous versions image.
