@@ -1,5 +1,3 @@
-Note WIP
-
 ### Introduction
 
 This is a demonstration of Argo Rollouts integrated with Argo CD in a standard OpenShift environment without a Service Mesh installed. The demo
