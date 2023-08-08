@@ -5,6 +5,3 @@ namespace: rollouts-demo-dev
 
 resources:
 - ../../../apps/deploy/base
-images:
-- name: argoproj/rollouts-demo
-  newTag: green
