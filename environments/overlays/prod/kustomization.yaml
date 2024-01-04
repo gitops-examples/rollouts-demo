@@ -9,6 +9,3 @@ resources:
 - ../../../apps/rollout/overlays/bluegreen
 - ../../../apps/rollout/overlays/canary
 - networkpolicy-cicd.yaml
-images:
-- name: argoproj/rollouts-demo
-  newTag: red
