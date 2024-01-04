@@ -6,8 +6,9 @@ metadata:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   args:
-  - name: query
   - name: route-url
+  - name: namespace
+  - name: route-name
   - name: api-token
     valueFrom:
       secretKeyRef:
@@ -22,17 +23,15 @@ spec:
     successCondition: result[0].value[1] == '0'
     failureLimit: 0
     provider:
-      web:
-          url: https://thanos-querier.openshift-monitoring:9091/api/v1/query?query={{ args.query }}
-          insecure: true
-          headers:
-            - key: Authorization
-              value: "Bearer {{args.api-token}}"
-          jsonPath: "{$.data.result}"
-      # prometheus:
-      #   address: https://thanos-querier.openshift-monitoring:9091
-      #   query: |
-      #     sum(irate(haproxy_backend_http_responses_total{exported_namespace='{{args.namespace}}', route=~"{{args.route-name}}", code!~"5.*"}[5m])) / sum(irate(haproxy_backend_http_responses_total{exported_namespace='{{args.namespace}}', route=~"{{args.route-name}}"}[5m])) > 0 or on() vector(0)
+      prometheus:
+        address: https://thanos-querier.openshift-monitoring.svc.cluster.local:9091
+        timeout: 40
+        insecure: true
+        headers:
+          - key: Authorization
+            value: "Bearer {{args.api-token}}"
+        query: |
+          irate(haproxy_backend_http_responses_total{exported_namespace='{{ namespace }}', route=~"{{ route-name }}", code="5xx"}[1m]) > 5 or on() vector(0)
   - name: run-load
     provider:
       job:
