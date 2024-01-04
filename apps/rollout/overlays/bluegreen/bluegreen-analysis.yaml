@@ -31,7 +31,7 @@ spec:
           - key: Authorization
             value: "Bearer {{args.api-token}}"
         query: |
-          irate(haproxy_backend_http_responses_total{exported_namespace='{{namespace}}', route=~"{{route-name}}", code="5xx"}[1m]) > 5 or on() vector(0)
+          irate(haproxy_backend_http_responses_total{exported_namespace='{{args.namespace}}', route=~"{{args.route-name}}", code="5xx"}[1m]) > 5 or on() vector(0)
   - name: run-load
     provider:
       job:
