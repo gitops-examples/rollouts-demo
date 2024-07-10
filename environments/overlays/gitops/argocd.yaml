@@ -112,6 +112,8 @@ spec:
       - customization:
           jsonPointers:
             - /status/ingress
+            - /spec/to/weight
+            - /spec/alternateBackends/weight
         group: route.openshift.io
         kind: Route
   ha:
