@@ -35,6 +35,11 @@ spec:
           value: canary-canary-rollouts-demo-prod.${SUB_DOMAIN}
       canaryService: canary-canary
       stableService: canary-stable
+      trafficRouting:
+        plugins:
+          argoproj-labs/openshift:
+            routes:
+              - canary-all
       steps:
       - setWeight: 20
       - pause: {}

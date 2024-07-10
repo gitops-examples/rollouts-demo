@@ -17,7 +17,7 @@ Your local machine must be able to run a bash script and have the following comm
 
 OpenShift cluser must have:
 
-- OpenShift GitOps 1.11+
+- OpenShift GitOps 1.13+
 - OpenShift Pipelines 1.11+
 
 ### Installing the Demo

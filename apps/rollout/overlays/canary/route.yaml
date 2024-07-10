@@ -41,4 +41,8 @@ spec:
     termination: edge
   to:
     kind: Service
-    name: canary-all
+    name: canary-stable
+  alternateBackends:
+    - kind: Service
+      name: canary-canary
+      weight: 0
