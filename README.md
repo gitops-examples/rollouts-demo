@@ -88,9 +88,7 @@ At this point you can examine each rollout, you should see that the bluegreen ha
 
 ![alt text](https://raw.githubusercontent.com/gitops-examples/rollouts-demo/main/docs/img/blue-green-paused.png)
 
-Next if you look at the canary one, you will see that the one service is designated as `Stable` and the other as `Canary`. Similar to blue green, if you check the corresponding routes you should see that Stable is displaying blue squares and canary is displaying green squares.
-
-One other route to note for canary is `canary-all`. If you look at that route you will see it mostly displays blue squares with a small number of green squares being shown. The `canary-all` selects all pods hence why you see both and when Rollouts is used without a traffic manager it will perform a best effort canary by controlling the number of pods between stable and canary. At the time of this writing OpenShift Routes are not supported as a traffic manager but it is on the OpenShift GitOps team roadmap.
+Next if you look at the canary one, you will see that the one service is designated as `Stable` and the other as `Canary`. Similar to blue green, if you check the corresponding routes you should see that Stable is displaying a mix of blue and green depending on weight and canary is displaying green squares.
 
 Finally check Argo CD and note that the status of the Application is suspended since the Argo rollouts are in a Paused state.
 
@@ -103,3 +101,44 @@ At this point you can proceed to promote both deployments and watch them go to c
 If you want to test performing a rollback, first go into Argo CD and disable automatic sync for the `rollouts-demo-prod` application, if you do not do this Argo CD will automatically revert the rollback back to the state in git, which is expected, but prevents the rollback.
 
 Once the automatic sync is disabled you can then perform a rollback to the previous blue version. Note that like Deployment rollbacks are essentially a roll forward with the previous versions image.
+
+### Route Traffic Plugin with Argo CD
+
+When using the Route traffic plugin with Rollouts, note that if the routes are being managed by Argo CD you will need to configure ignoreDifferences in the Argo CD application in order for the traffic manager to change the weights dynamically. I would also recommend setting `RespectIgnoreDifferences=true` in `syncOptions` so that an accidentally sync doesn't result in Argo CD overwriting the weights made by the traffic manager.
+
+In this demo we have it configured as follows:
+
+```
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    app.kubernetes.io/name: rollouts-demo
+  name: rollouts-demo-prod
+  namespace: rollouts-demo-gitops
+spec:
+  destination:
+    namespace: rollouts-demo-prod
+    server: https://kubernetes.default.svc
+  ignoreDifferences:
+  - group: route.openshift.io
+    jsonPointers:
+    - /status
+    - /spec/to/weight
+    - /spec/alternateBackends
+    kind: Route
+  project: default
+  source:
+    path: environments/overlays/prod
+    repoURL: https://github.com/gitops-examples/rollouts-demo.git
+    targetRevision: main
+  syncPolicy:
+    automated:
+      selfHeal: true
+    syncOptions:
+    - RespectIgnoreDifferences=true
+```
+
+A couple of notes:
+- We ignore `alternateBackends` because the traffic manager will remove it when the weight is set to 100 on stable
+- I had some issues with `status` coming up as a diff when the route status was set to `status: {}`, some additional investigation is required.
