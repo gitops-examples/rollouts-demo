@@ -1,7 +1,10 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: canary-stable
+  name: canary
+  annotations:
+    haproxy.router.openshift.io/disable_cookies: 'true'
+    haproxy.router.openshift.io/balance: roundrobin
 spec:
   port:
     targetPort: http
@@ -11,6 +14,11 @@ spec:
   to:
     kind: Service
     name: canary-stable
+    weight: 100
+  alternateBackends:
+    - kind: Service
+      name: canary-canary
+      weight: 0
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
@@ -25,24 +33,3 @@ spec:
   to:
     kind: Service
     name: canary-canary
----
-apiVersion: route.openshift.io/v1
-kind: Route
-metadata:
-  name: canary-all
-  annotations:
-    haproxy.router.openshift.io/disable_cookies: 'true'
-    haproxy.router.openshift.io/balance: roundrobin
-spec:
-  port:
-    targetPort: http
-  tls:
-    insecureEdgeTerminationPolicy: Redirect
-    termination: edge
-  to:
-    kind: Service
-    name: canary-stable
-  alternateBackends:
-    - kind: Service
-      name: canary-canary
-      weight: 0
