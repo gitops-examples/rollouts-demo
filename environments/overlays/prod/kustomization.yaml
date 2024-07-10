@@ -11,4 +11,4 @@ resources:
 - networkpolicy-cicd.yaml
 images:
 - name: argoproj/rollouts-demo
-  newTag: green
+  newTag: blue
