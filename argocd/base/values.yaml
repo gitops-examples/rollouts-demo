@@ -40,10 +40,11 @@ applications:
       ignoreDifferences:
         - group: route.openshift.io
           kind: Route
+          name: canary
           jsonPointers:
             - /status
             - /spec/to/weight
-            - /spec/alternateBackends/weight
+            - /spec/alternateBackends
 
   rollouts-demo-cicd:
     labels:
