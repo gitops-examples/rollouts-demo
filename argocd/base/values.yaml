@@ -41,7 +41,7 @@ applications:
         - group: route.openshift.io
           kind: Route
           jsonPointers:
-            - /status/ingress
+            - /status
             - /spec/to/weight
             - /spec/alternateBackends/weight
 
