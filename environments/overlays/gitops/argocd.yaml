@@ -45,10 +45,23 @@ spec:
         insecureEdgeTerminationPolicy: Redirect
         termination: edge
   resourceTrackingMethod: annotation
-  disableAdmin: false
-  resourceCustomizations: |
-    PersistentVolumeClaim:
-      health.lua: |
+
+  sso:
+    dex:
+      image: quay.io/gnunn/dex
+      openShiftOAuth: true
+      version: token-exchange-1.8
+    provider: dex
+  rbac:
+    defaultPolicy: 'role:admin'
+    policy: |
+      g, cluster-admins, role:admin
+    scopes: '[groups]'
+  extraConfig:
+    accounts.rollouts-demo-pipeline: apiKey
+  resourceHealthChecks:
+    - kind: PersistentVolumeClaim
+      check: |
         hs = {}
         if obj.status ~= nil then
           if obj.status.phase ~= nil then
@@ -65,22 +78,8 @@ spec:
           end
         end
         hs.status = "Progressing"
-        hs.message = "Waiting for certificate"
+        hs.message = "Waiting for PVC"
         return hs
-  sso:
-    dex:
-      image: quay.io/gnunn/dex
-      openShiftOAuth: true
-      version: token-exchange-1.8
-    provider: dex
-  rbac:
-    defaultPolicy: 'role:admin'
-    policy: |
-      g, cluster-admins, role:admin
-    scopes: '[groups]'
-  extraConfig:
-    accounts.rollouts-demo-pipeline: apiKey
-  resourceHealthChecks:
     - check: |
         hs = {}
         hs.status = "Progressing"
