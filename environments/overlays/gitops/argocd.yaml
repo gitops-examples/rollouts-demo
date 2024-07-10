@@ -45,7 +45,6 @@ spec:
         insecureEdgeTerminationPolicy: Redirect
         termination: edge
   resourceTrackingMethod: annotation
-
   sso:
     dex:
       image: quay.io/gnunn/dex

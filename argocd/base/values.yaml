@@ -40,7 +40,6 @@ applications:
       ignoreDifferences:
         - group: route.openshift.io
           kind: Route
-          name: canary
           jsonPointers:
             - /status
             - /spec/to/weight
